@@ -9,6 +9,12 @@ import mongoose from "mongoose";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import methodOverride from 'method-override';
+import { 
+  attachUser, 
+  flashMessages, 
+  securityHeaders, 
+  validateSession 
+} from "./middlewares/auth.js";
 
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
@@ -31,6 +37,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride('_method'));
 
+
 // MongoDB
 mongoose.connect(process.env.MONGO_URL, {
   // useNewUrlParser: true,
@@ -47,6 +54,12 @@ app.use(session({
   store: MongoStore.create({ mongoUrl: process.env.MONGO_URL }),
   cookie: { maxAge: 1000 * 60 * 60 } // 1 hour
 }));
+
+// Apply middleware globally
+app.use(validateSession);
+app.use(attachUser);
+app.use(flashMessages);
+
 
 // Flash messages & locals
 app.use((req, res, next) => {
