@@ -16,9 +16,9 @@ import invoiceRoutes from "./routes/InvoiceRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import pagesRoutes from "./routes/pageRoutes.js";
 
+const app = express();
 const PORT = process.env.PORT || 3000;
 
-const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -32,7 +32,7 @@ app.use(express.json());
 app.use(methodOverride('_method'));
 
 // MongoDB
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(process.env.MONGO_URL, {
   // useNewUrlParser: true,
   // useUnifiedTopology: true
 })
@@ -44,8 +44,8 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({ mongoUrl: "mongodb://127.0.0.1:27017/transportBilling" }),
-  cookie: { maxAge: 1000 * 60 * 60 }
+  store: MongoStore.create({ mongoUrl: process.env.MONGO_URL }),
+  cookie: { maxAge: 1000 * 60 * 60 } // 1 hour
 }));
 
 // Flash messages & locals
@@ -54,8 +54,10 @@ app.use((req, res, next) => {
   res.locals.error = req.session.error;
   res.locals.username = req.session.username || null;
   res.locals.role = req.session.role || null;
+
   delete req.session.success;
   delete req.session.error;
+  
   next();
 });
 
@@ -68,4 +70,6 @@ app.use("/invoices", invoiceRoutes);
 app.use("/admin", adminRoutes);
 app.use("/user", userRoutes);
 
-app.listen(PORT, () => console.log("Server running at http://localhost:3000"));
+app.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
+});
