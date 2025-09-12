@@ -1,0 +1,17 @@
+<div class="row justify-content-center mt-5">
+  <div class="col-md-6">
+    <div class="card shadow-lg">
+      <div class="card-header bg-dark text-white text-center">
+        <h2>My Profile</h2>
+      </div>
+      <div class="card-body">
+        <p><strong>Username:</strong> <%= user.username %></p>
+        <p><strong>Email:</strong> <%= user.email %></p>
+        <p><strong>Role:</strong> <%= user.role %></p>
+        <hr>
+        <a href="/invoices" class="btn btn-primary w-100 mb-2">My Invoices</a>
+        <a href="/logout" class="btn btn-danger w-100">Logout</a>
+      </div>
+    </div>
+  </div>
+</div>

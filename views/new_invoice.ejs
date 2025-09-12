@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>New Invoice - Ganeshay Transport</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .container { max-width: 1200px; margin-top: 50px; }
+    h2 { background: linear-gradient(135deg, #4b6cb7, #182848); color: white; padding: 25px; border-radius: 12px; text-align: center; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    input.form-control { border-radius: 8px; border: 1px solid #ced4da; }
+    input.form-control:focus { border-color: #4b6cb7; box-shadow: 0 0 8px rgba(75,108,183,0.3); }
+    .btn-success, .btn-primary { border-radius: 8px; font-weight: 600; }
+    .table { border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .table th { background: linear-gradient(135deg, #4b6cb7, #182848); color: white; text-align: center; }
+    .table td { text-align: center; vertical-align: middle; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Ganeshay Transport - New Invoice</h2>
+
+  <!-- Client/Driver/Agent -->
+  <div class="row mb-3">
+    <div class="col-md-4"><input type="text" id="clientName" placeholder="Client Name" class="form-control" required></div>
+    <div class="col-md-4"><input type="text" id="driverName" placeholder="Driver Name" class="form-control" required></div>
+    <div class="col-md-4"><input type="text" id="agentName" placeholder="Agent Name" class="form-control" required></div>
+  </div>
+
+  <!-- Direct Price Toggle -->
+  <div class="form-check form-switch mb-3">
+    <input class="form-check-input" type="checkbox" id="directPriceToggle">
+    <label class="form-check-label">Direct Price Entry</label>
+  </div>
+
+  <!-- Entry Row -->
+  <div class="row g-2 mb-3">
+    <div class="col-md-2"><input type="text" id="BillNo" placeholder="Bill No" class="form-control"></div>
+    <div class="col-md-2"><input type="text" id="vehicleNo" placeholder="Vehicle No" class="form-control"></div>
+    <div class="col-md-2"><input type="date" id="deliveryDate" class="form-control"></div>
+    <div class="col-md-2"><input type="time" id="deliveryTime" class="form-control"></div>
+    <div class="col-md-1"><input type="number" id="tones" placeholder="Tones" class="form-control"></div>
+    <div class="col-md-2"><input type="number" id="pricePerTone" placeholder="Price/Tone" class="form-control"></div>
+    <div class="col-md-1"><input type="number" id="totalPrice" placeholder="Total" class="form-control" readonly></div>
+    <div class="col-md-1"><button class="btn btn-success w-100" onclick="addEntry()">+</button></div>
+  </div>
+
+  <!-- Invoice Table -->
+  <div class="table-responsive">
+    <table class="table table-bordered" id="invoiceTable">
+      <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>Bill No</th>
+          <th>Vehicle No</th>
+          <th>Delivery Date</th>
+          <th>Delivery Time</th>
+          <th>Tones</th>
+          <th>Price/Tone</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="text-center mt-3">
+    <button class="btn btn-primary btn-lg" onclick="generateInvoice()">Generate Invoice</button>
+  </div>
+</div>
+
+<script>
+let entryCount = 0;
+const maxEntries = 100;
+
+document.getElementById('directPriceToggle').addEventListener('change', () => {
+  const isDirect = document.getElementById('directPriceToggle').checked;
+  document.getElementById('tones').disabled = isDirect;
+  if(isDirect) document.getElementById('tones').value = '';
+  updateTotal();
+});
+
+['tones','pricePerTone'].forEach(id => document.getElementById(id).addEventListener('input', updateTotal));
+
+function updateTotal(){
+  const tones = parseFloat(document.getElementById('tones').value) || 0;
+  const price = parseFloat(document.getElementById('pricePerTone').value) || 0;
+  document.getElementById('totalPrice').value = document.getElementById('tones').disabled ? price : tones*price;
+}
+
+function addEntry(){
+  if(entryCount >= maxEntries){ alert("Maximum 100 entries"); return; }
+
+  const billNo = document.getElementById('BillNo').value.trim();
+  const vehicleNo = document.getElementById('vehicleNo').value.trim();
+  const deliveryDate = document.getElementById('deliveryDate').value;
+  const deliveryTime = document.getElementById('deliveryTime').value;
+  const tones = document.getElementById('tones').value.trim();
+  const pricePerTone = document.getElementById('pricePerTone').value.trim();
+  const totalPrice = document.getElementById('totalPrice').value.trim();
+
+  if(!pricePerTone){ alert("Price is required"); return; }
+
+  entryCount++;
+  const tbody = document.getElementById('invoiceTable').getElementsByTagName('tbody')[0];
+  const row = tbody.insertRow();
+  row.innerHTML = `
+    <td>${entryCount}</td>
+    <td>${billNo}</td>
+    <td>${vehicleNo}</td>
+    <td>${deliveryDate || '-'}</td>
+    <td>${deliveryTime || '-'}</td>
+    <td>${tones || '-'}</td>
+    <td>${pricePerTone}</td>
+    <td>${totalPrice}</td>
+  `;
+
+  document.getElementById('BillNo').value='';
+  document.getElementById('vehicleNo').value = '';
+  document.getElementById('deliveryDate').value = '';
+  document.getElementById('deliveryTime').value = '';
+  document.getElementById('tones').value = '';
+  document.getElementById('pricePerTone').value = '';
+  document.getElementById('totalPrice').value = '';
+}
+
+function generateInvoice(){
+  if(entryCount===0){ alert("No entries"); return; }
+
+  const clientName = document.getElementById('clientName').value.trim();
+  const driverName = document.getElementById('driverName').value.trim();
+  const agentName = document.getElementById('agentName').value.trim();
+  if(!clientName || !driverName || !agentName){ alert("Fill all fields"); return; }
+
+  const table = document.getElementById('invoiceTable').getElementsByTagName('tbody')[0];
+  const items=[];
+  let total=0;
+
+  for(let i=0;i<table.rows.length;i++){
+    const c=table.rows[i].cells;
+    const item={
+      billNo:c[1].innerText,
+      vehicleNo:c[2].innerText,
+      deliveryDate:c[3].innerText!=='-'?c[3].innerText:null,
+      deliveryTime:c[4].innerText!=='-'?c[4].innerText:null,
+      tones:c[5].innerText!=='-'?parseFloat(c[5].innerText):0,
+      pricePerTone:parseFloat(c[6].innerText),
+      totalPrice:parseFloat(c[7].innerText)
+    };
+    items.push(item);
+    total+=item.totalPrice;
+  }
+
+  fetch('/invoices/new',{
+    method:'POST',
+    headers:{ 'Content-Type':'application/json' },
+    body:JSON.stringify({ clientName, driverName, agentName, items, totalAmount:total })
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    if(data.success){
+      alert("Invoice generated!");
+      window.location.href = '/invoices';
+    } else {
+      alert(data.message||"Failed");
+    }
+  })
+  .catch(err=>alert("Server error: "+err));
+}
+</script>
+</body>
+</html>

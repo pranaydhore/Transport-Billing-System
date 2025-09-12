@@ -1,0 +1,40 @@
+<nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #4b6cb7, #182848); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 1rem;">
+ <div style="font-weight: bold; font-size: 2rem;padding-left: 2rem;; color: white; font-style: italic; font-family: Arial, sans-serif;">
+  Ganeshay Transport
+  </div class="me-2">
+  <div>
+    <button class="navbar-toggler me-4" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+    
+
+    <div class="collapse navbar-collapse me-5" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+
+        <% if (username) { %>
+          <!-- After login -->
+          <li class="nav-item"><a class="nav-link text-light fw-semibold" href="/">🏠 Home</a></li>
+          <li class="nav-item"><a class="nav-link text-light fw-semibold" href="/invoices">📑 Invoices</a></li>
+          <li class="nav-item"><a class="nav-link text-light fw-semibold" href="/invoices/new">➕ New Invoice</a></li>
+          <li class="nav-item"><a class="nav-link text-light fw-semibold" href="/about">ℹ️ About</a></li>
+          <li class="nav-item"><a class="nav-link text-light fw-semibold" href="/profile">👤 Profile</a></li>
+
+          <% if (role === 'admin') { %>
+            <li class="nav-item"><a class="nav-link text-warning fw-bold" href="/admin">⚡ Admin Dashboard</a></li>
+          <% } %>
+
+          <li class="nav-item"><a class="nav-link text-danger fw-semibold" href="/logout">🚪 Logout</a></li>
+
+        <% } else { %>
+          <!-- Before login -->
+          <li class="nav-item"><a class="nav-link text-light fw-semibold" href="/">🏠 Home</a></li>
+          <li class="nav-item"><a class="nav-link text-light fw-semibold" href="/about">ℹ️ About</a></li>
+          <li class="nav-item"><a class="nav-link text-light fw-semibold" href="/login">🔑 Login</a></li>
+          <li class="nav-item"><a class="nav-link text-light fw-semibold" href="/signup">✍️ Signup</a></li>
+        <% } %>
+
+      </ul>
+    </div>
+  </div>
+</nav>

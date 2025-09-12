@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Edit Invoice - Ganeshay Transport</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f0f2f5;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .container {
+        max-width: 1200px;
+        margin-top: 50px;
+      }
+      h2 {
+        background: linear-gradient(135deg, #4b6cb7, #182848);
+        color: white;
+        padding: 25px;
+        border-radius: 12px;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      input.form-control {
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+      }
+      input.form-control:focus {
+        border-color: #4b6cb7;
+        box-shadow: 0 0 8px rgba(75, 108, 183, 0.3);
+      }
+      .btn-success,
+      .btn-primary,
+      .btn-danger {
+        border-radius: 8px;
+        font-weight: 600;
+      }
+      .btn-success:hover {
+        background-color: #218838;
+      }
+      .btn-primary:hover {
+        background-color: #2a3eb1;
+      }
+      .table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      }
+      .table th {
+        background: linear-gradient(135deg, #4b6cb7, #182848);
+        color: white;
+        text-align: center;
+      }
+      .table td {
+        text-align: center;
+        vertical-align: middle;
+      }
+      .table tbody tr:hover {
+        background-color: #f1f1f1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Edit Invoice - Ganeshay Transport</h2>
+
+      <!-- Client / Driver / Agent -->
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <input
+            type="text"
+            id="clientName"
+            class="form-control"
+            placeholder="Client Name"
+            value="<%= invoice.clientName %>"
+          />
+        </div>
+        <div class="col-md-4">
+          <input
+            type="text"
+            id="driverName"
+            class="form-control"
+            placeholder="Driver Name"
+            value="<%= invoice.driverName %>"
+          />
+        </div>
+        <div class="col-md-4">
+          <input
+            type="text"
+            id="agentName"
+            class="form-control"
+            placeholder="Agent Name"
+            value="<%= invoice.agentName %>"
+          />
+        </div>
+      </div>
+
+      <!-- Entry Row -->
+      <div class="row g-2 mb-3">
+        <div class="col-md-2">
+          <input
+            type="text"
+            id="BillNo"
+            placeholder="Bill No"
+            class="form-control"
+          />
+        </div>
+        <div class="col-md-2">
+          <input
+            type="text"
+            id="vehicleNo"
+            placeholder="Vehicle No"
+            class="form-control"
+          />
+        </div>
+        <div class="col-md-2">
+          <input type="date" id="deliveryDate" class="form-control" />
+        </div>
+        <div class="col-md-2">
+          <input type="time" id="deliveryTime" class="form-control" />
+        </div>
+        <div class="col-md-1">
+          <input
+            type="number"
+            id="tones"
+            placeholder="Tones"
+            class="form-control"
+          />
+        </div>
+        <div class="col-md-2">
+          <input
+            type="number"
+            id="pricePerTone"
+            placeholder="Price/Tone"
+            class="form-control"
+          />
+        </div>
+        <div class="col-md-1">
+          <input
+            type="number"
+            id="totalPrice"
+            placeholder="Total"
+            class="form-control"
+            readonly
+          />
+        </div>
+        <div class="col-md-1">
+          <button class="btn btn-success w-100" onclick="addEntry()">+</button>
+        </div>
+      </div>
+
+      <!-- Invoice Table -->
+      <div class="table-responsive">
+        <table class="table table-bordered" id="invoiceTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Bill No</th>
+              <th>Vehicle No</th>
+              <th>Delivery Date</th>
+              <th>Delivery Time</th>
+              <th>Tones</th>
+              <th>Price/Tone</th>
+              <th>Total</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if(invoice.items && invoice.items.length){ %> <%
+            invoice.items.forEach((item, index) => { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td>
+                <input
+                  type="text"
+                  class="form-control billNo"
+                  value="<%= item.billNo %>"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  class="form-control vehicleNo"
+                  value="<%= item.vehicleNo %>"
+                />
+              </td>
+              <td>
+                <input
+                  type="date"
+                  class="form-control deliveryDate"
+                  value="<%= item.deliveryDate ? new Date(item.deliveryDate).toISOString().split('T')[0] : '' %>"
+                />
+              </td>
+              <td>
+                <input
+                  type="time"
+                  class="form-control deliveryTime"
+                  value="<%= item.deliveryTime %>"
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  class="form-control tones"
+                  value="<%= item.tones %>"
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  class="form-control pricePerTone"
+                  value="<%= item.pricePerTone %>"
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  class="form-control totalPrice"
+                  value="<%= item.totalPrice %>"
+                  readonly
+                />
+              </td>
+              <td>
+                <button class="btn btn-danger btn-sm" onclick="removeRow(this)">
+                  Delete
+                </button>
+              </td>
+            </tr>
+            <% }) %> <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="text-center mt-3">
+        <button class="btn btn-primary btn-lg" onclick="updateInvoice()">
+          Update Invoice
+        </button>
+      </div>
+    </div>
+
+    <script>
+      let entryCount =
+        invoice.items && invoice.items.length ? invoice.items.length : 0;
+
+      // Auto recalc total for new row inputs
+      function recalcTotalRow(row) {
+        const tones = parseFloat(row.querySelector(".tones").value) || 0;
+        const price = parseFloat(row.querySelector(".pricePerTone").value) || 0;
+        row.querySelector(".totalPrice").value = tones * price;
+      }
+
+      // Attach input listeners to existing rows
+      document.querySelectorAll("#invoiceTable tbody tr").forEach((row) => {
+        const tonesInput = row.querySelector(".tones");
+        const priceInput = row.querySelector(".pricePerTone");
+        [tonesInput, priceInput].forEach((input) => {
+          input.addEventListener("input", () => recalcTotalRow(row));
+        });
+      });
+
+      function addEntry() {
+        const billNo = document.getElementById("BillNo").value.trim();
+        const vehicleNo = document.getElementById("vehicleNo").value.trim();
+        const deliveryDate = document.getElementById("deliveryDate").value;
+        const deliveryTime = document.getElementById("deliveryTime").value;
+        const tones = parseFloat(document.getElementById("tones").value) || 0;
+        const pricePerTone =
+          parseFloat(document.getElementById("pricePerTone").value) || 0;
+        const totalPrice = tones * pricePerTone;
+
+        if (!pricePerTone) {
+          alert("Price required");
+          return;
+        }
+
+        entryCount++;
+        const tbody = document.querySelector("#invoiceTable tbody");
+        const row = tbody.insertRow();
+        row.innerHTML = `
+    <td>${entryCount}</td>
+    <td><input type="text" class="form-control billNo" value="${billNo}"></td>
+    <td><input type="text" class="form-control vehicleNo" value="${vehicleNo}"></td>
+    <td><input type="date" class="form-control deliveryDate" value="${deliveryDate}"></td>
+    <td><input type="time" class="form-control deliveryTime" value="${deliveryTime}"></td>
+    <td><input type="number" class="form-control tones" value="${tones}"></td>
+    <td><input type="number" class="form-control pricePerTone" value="${pricePerTone}"></td>
+    <td><input type="number" class="form-control totalPrice" value="${totalPrice}" readonly></td>
+    <td><button class="btn btn-danger btn-sm" onclick="removeRow(this)">Delete</button></td>
+  `;
+
+        const tonesInput = row.querySelector(".tones");
+        const priceInput = row.querySelector(".pricePerTone");
+        [tonesInput, priceInput].forEach((input) => {
+          input.addEventListener("input", () => recalcTotalRow(row));
+        });
+
+        [
+          "BillNo",
+          "vehicleNo",
+          "deliveryDate",
+          "deliveryTime",
+          "tones",
+          "pricePerTone",
+          "totalPrice",
+        ].forEach((id) => (document.getElementById(id).value = ""));
+      }
+
+      function removeRow(btn) {
+        btn.closest("tr").remove();
+        entryCount--;
+      }
+
+      function updateInvoice() {
+        const clientName = document.getElementById("clientName").value.trim();
+        const driverName = document.getElementById("driverName").value.trim();
+        const agentName = document.getElementById("agentName").value.trim();
+        if (!clientName || !driverName || !agentName) {
+          alert("Fill all fields");
+          return;
+        }
+
+        const table = document.querySelectorAll("#invoiceTable tbody tr");
+        const items = [];
+        let totalAmount = 0;
+
+        table.forEach((row) => {
+          const item = {
+            billNo: row.querySelector(".billNo").value.trim(),
+            vehicleNo: row.querySelector(".vehicleNo").value.trim(),
+            deliveryDate: row.querySelector(".deliveryDate").value || null,
+            deliveryTime: row.querySelector(".deliveryTime").value || null,
+            tones: parseFloat(row.querySelector(".tones").value) || 0,
+            pricePerTone:
+              parseFloat(row.querySelector(".pricePerTone").value) || 0,
+            totalPrice: parseFloat(row.querySelector(".totalPrice").value) || 0,
+          };
+          totalAmount += item.totalPrice;
+          items.push(item);
+        });
+
+        fetch(`/invoices/<%= invoice._id %>`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            clientName,
+            driverName,
+            agentName,
+            items,
+            totalAmount,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              alert("Invoice updated!");
+              window.location.href = "/invoices";
+            } else {
+              alert(data.message || "Update failed");
+            }
+          })
+          .catch((err) => alert("Server error: " + err));
+      }
+    </script>
+  </body>
+</html>
