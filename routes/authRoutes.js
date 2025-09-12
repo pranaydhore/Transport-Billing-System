@@ -81,9 +81,16 @@ router.post("/login", async (req, res) => {
 
 // ================== LOGOUT ==================
 router.get("/logout", (req, res) => {
-  req.session.destroy(() => {
-    res.redirect("/");
-  });
+  // Store a temporary message in session
+  req.session.success = "You have successfully logged out.";
+
+  // Destroy only the user-related data, keep session for flash message
+  req.session.userId = null;
+  req.session.role = null;
+  req.session.username = null;
+
+  res.redirect("/");
 });
+
 
 export default router;
