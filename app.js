@@ -40,19 +40,26 @@ app.use(methodOverride('_method'));
 
 // MongoDB
 mongoose.connect(process.env.MONGO_URL, {
-  // useNewUrlParser: true,
-  // useUnifiedTopology: true
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 })
 .then(() => console.log("MongoDB Atlas connected ✅"))
 .catch(err => console.log("MongoDB Atlas error ❌", err));
 
 // Session
+// Session
+app.set("trust proxy", 1); // ✅ Required for Render HTTPS
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || "fallback_secret",
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: process.env.MONGO_URL }),
-  cookie: { maxAge: 1000 * 60 * 60 } // 1 hour
+  cookie: {
+    maxAge: 1000 * 60 * 60,   // 1 hour
+    secure: process.env.NODE_ENV === "production", // only true in Render
+    httpOnly: true,
+    sameSite: "lax"
+  }
 }));
 
 // Apply middleware globally
