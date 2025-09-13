@@ -111,11 +111,12 @@
           <th>#</th>
           <th>Bill No</th>
           <th>Vehicle No</th>
+          <th>Delivery Date</th>
+          <th>Delivery Time</th>
           <th>Tones</th>
           <th>Price/Tone</th>
           <th>Total</th>
-          <th>Delivery Date</th>
-          <th>Delivery Time</th>
+          
         </tr>
       </thead>
       <tbody>
@@ -124,11 +125,11 @@
             <td><%= index + 1 %></td>
             <td><%= item.billNo || '-' %></td>
             <td><%= item.vehicleNo %></td>
+            <td><%= item.deliveryDate ? new Date(item.deliveryDate).toLocaleDateString() : '-' %></td>
+            <td><%= item.deliveryTime || '-' %></td>
             <td><%= item.tones %></td>
             <td>₹<%= item.pricePerTone %></td>
             <td>₹<%= item.totalPrice %></td>
-            <td><%= item.deliveryDate ? new Date(item.deliveryDate).toLocaleDateString() : '-' %></td>
-            <td><%= item.deliveryTime || '-' %></td>
           </tr>
         <% }) %>
         <tr class="total-row">

@@ -39,9 +39,9 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// ================== LOGIN ==================
 router.get("/login", (req, res) => res.render("login"));
 
+// ================== LOGIN ==================
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -52,6 +52,16 @@ router.post("/login", async (req, res) => {
       req.session.error = "User not found";
       return res.redirect("/login");
     }
+
+    // ---------- Paste here ----------
+    // If admin is stored in plain text (old entry), hash it once
+    if (normalizedEmail === ADMIN_EMAIL && !user.password.startsWith("$2b$")) {
+      const hashedPassword = await bcrypt.hash(user.password, 10);
+      user.password = hashedPassword;
+      await user.save();
+      console.log("Fixed admin password hash ✅");
+    }
+    // --------------------------------
 
     const match = await bcrypt.compare(password, user.password);
     if (!match) {

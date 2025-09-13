@@ -47,19 +47,12 @@ mongoose.connect(process.env.MONGO_URL, {
 .catch(err => console.log("MongoDB Atlas error ❌", err));
 
 // Session
-// Session
-app.set("trust proxy", 1); // ✅ Required for Render HTTPS
 app.use(session({
-  secret: process.env.SESSION_SECRET || "fallback_secret",
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: process.env.MONGO_URL }),
-  cookie: {
-    maxAge: 1000 * 60 * 60,   // 1 hour
-    secure: process.env.NODE_ENV === "production", // only true in Render
-    httpOnly: true,
-    sameSite: "lax"
-  }
+  cookie: { maxAge: 1000 * 60 * 60 } // 1 hour
 }));
 
 // Apply middleware globally
